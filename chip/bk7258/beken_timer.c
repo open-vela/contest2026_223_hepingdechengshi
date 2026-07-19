@@ -1,5 +1,5 @@
 /****************************************************************************
- * arch/arm/include/stm32h7/chip.h
+ *
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -17,16 +17,6 @@
  * under the License.
  *
  ****************************************************************************/
+#include <nuttx/arch.h>
 
-#pragma once
-
-
-#include <nuttx/config.h>
-#include <arch/irq.h>
-
-
-#define NVIC_SYSH_PRIORITY_MIN     0xf0 /* All bits set in minimum priority */
-#define NVIC_SYSH_PRIORITY_DEFAULT 0x80 /* Midpoint is the default */
-#define NVIC_SYSH_PRIORITY_MAX     0x00 /* Zero is maximum priority */
-#define NVIC_SYSH_PRIORITY_STEP    0x10 /* Four bits of interrupt priority used */
-
+void up_timer_initialize(void) {}

@@ -1,0 +1,39 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+if ARCH_CHIP_CUSTOM
+
+comment "Beken Configuration Options"
+
+choice
+    prompt "Beken Chip Selection"
+    default ARCH_CHIP_BK7258
+
+config ARCH_CHIP_BK7258
+	bool "bk7258"
+ 	select ARCH_ARMV8M
+	select ARCH_CORTEXM33
+    select ARCH_HAVE_FPU
+	select ARCH_HAVE_MPU
+	# select ARCH_HAVE_FETCHADD
+	# select ARCH_HAVE_HEAPCHECK
+	# select ARCH_HAVE_PROGMEM
+	# select ARCH_HAVE_SPI_BITORDER
+	# select ARM_HAVE_MPU_UNIFIED
+	# select ARMV8M_HAVE_STACKCHECK
+	# select ARMV8M_USEBASEPRI
+	# select ARMV8M_HAVE_ICACHE
+	# select ARMV8M_HAVE_DCACHE
+	# select ARMV8M_ICACHE
+	# select ARMV8M_DCACHE
+	# select ARCH_ICACHE
+	# select ARCH_DCACHE
+	# select BF0_HCPU
+
+endchoice
+
+
+
+endif

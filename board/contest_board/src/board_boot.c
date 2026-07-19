@@ -8,3 +8,9 @@ void openvela_board_initialize(void)
 {
   /* Placeholder: no hardware initialization. */
 }
+
+
+int board_app_initialize(uintptr_t arg) {
+  (void)arg;
+  return 0;
+}

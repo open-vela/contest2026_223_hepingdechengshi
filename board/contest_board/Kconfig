@@ -1,11 +1,21 @@
 #
 # Contest 2026 team 000 board placeholder
 #
+if ARCH_BOARD_CUSTOM
+comment "Beken Board Configuration Options"
+
+config ARCH_BOARD_CONTEST2026_000_BOARD
+	bool "Contest Board"
+	default y
 
 if ARCH_BOARD_CONTEST2026_000_BOARD
+
+comment "Beken Contest Board"
 
 config ARCH_BOARD_CONTEST2026_000_BOARD_TAG
 	string "Board tag"
 	default "contest2026_000_board"
+
+endif
 
 endif
