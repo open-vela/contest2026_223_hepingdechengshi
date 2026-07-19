@@ -31,17 +31,6 @@ repo sync -c -j8
 ### 编译
 
 ```bash
-cd ..
-./build.sh vendor/openvela/boards/contest2026_223_bk7258/bk7258 -j8
+./build.sh vendor/beken/boards/contest2026_223_board/configs/nsh/ --cmake -j8 
 ```
 
-### 烧录
-
-使用 Beken 官方烧录工具通过 UART（115200 8N1）烧录，分区布局详见 `docs/flash_layout.md`。
-
-烧录完成后串口可见 NSH 提示符：
-
-```
-NuttShell (NSH) NuttX-12.x
-nsh>
-```
