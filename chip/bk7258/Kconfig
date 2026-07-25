@@ -11,6 +11,9 @@ choice
     prompt "Beken Chip Selection"
     default ARCH_CHIP_BK7258
 
+config SOC_BK7236XX
+    bool "soc_bk7236xx"
+
 config ARCH_CHIP_BK7258
 	bool "bk7258"
  	select ARCH_ARMV8M

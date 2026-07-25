@@ -12,6 +12,6 @@
     <linkfile src="app/hello_app" dest="packages/demos/contest2026_223_hello_app"/>
     <linkfile src="quickapp/hello_quickapp" dest="packages/apps/contest2026_223_hello_quickapp"/>
 	<linkfile src="chip/bk7258" dest="vendor/beken/chips/bk7258"/>
-	<linkfile src="board/contest_board" dest="vendor/beken/boards/contest2026_223_board"/>
+	<linkfile src="board/bk7258_ap" dest="vendor/beken/boards/bk7258_ap"/>
   </project>
 </manifest>
