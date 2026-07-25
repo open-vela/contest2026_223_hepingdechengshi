@@ -10,7 +10,7 @@
  * any derivative work shall retain this copyright notice.
  */
 
-#include "soc/reg_base.h"
+#include "soc/bk7258/reg_base.h"
 #include "ram_regions.h"
 #include "partitions.h"
 #include "sdkconfig.h"
