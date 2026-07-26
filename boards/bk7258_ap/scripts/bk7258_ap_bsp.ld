@@ -10,10 +10,10 @@
  * any derivative work shall retain this copyright notice.
  */
 
-#include "soc/bk7258/reg_base.h"
+#include "common/include/soc/bk7258/reg_base.h"
 #include "ram_regions.h"
-#include "partitions.h"
-#include "sdkconfig.h"
+#include "bk7258_ap/partitions/partitions.h"
+#include <nuttx/config.h>
 
 #if (CONFIG_SOC_SMP)
 #include "cpu_id.h"
@@ -506,6 +506,7 @@ SECTIONS
 
         . = ALIGN(4);
         _bss_end = .;
+        _ebss = .;
     } > RAM
 
     bss_size = _bss_end - _bss_start;

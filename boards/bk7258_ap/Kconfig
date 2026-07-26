@@ -20,7 +20,7 @@ endif
 
 config BEKEN_AVDK_SMP_SOURCE
 	string "Source of bk_avdk_smp"
-	default "/home/crane/codebase/armino/bk_avdk_smp“
+	default "/home/crane/codebase/armino/bk_avdk_smp"
 
 
 endif
