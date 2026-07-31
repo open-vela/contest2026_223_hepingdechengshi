@@ -150,7 +150,7 @@ static u8 cal_crc8_0x31(u8 *data_buf, u16 len)
 
 #if CONFIG_SOC_SMP
 #include "spinlock.h"
-static SPINLOCK_SECTION volatile spinlock_t mb_uart_spin_lock = SPIN_LOCK_INIT;
+static SPINLOCK_SECTION volatile spinlock_t mb_uart_spin_lock = SP_UNLOCKED;
 #endif // CONFIG_SOC_SMP
 static inline uint32_t mb_uart_enter_critical()
 {

@@ -1,0 +1,5 @@
+set(incs .)
+set(srcs conv_utf8.c)
+# armino_component_register(SRCS "${srcs}" INCLUDE_DIRS "${incs}" PRIV_REQUIRES bk_common)
+target_sources(arch PRIVATE ${srcs})
+target_include_directories(arch PRIVATE ${incs})

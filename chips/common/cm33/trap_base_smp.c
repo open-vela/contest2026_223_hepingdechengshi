@@ -47,6 +47,8 @@
 #include <soc/reg_base.h>
 #include "spinlock.h"
 
+
+
 #define MAX_DUMP_SYS_MEM_COUNT       (8)
 #define SOC_DTCM_DATA_SIZE           (0x4000)
 #define SOC_ITCM_DATA_SIZE           (0x4000)
@@ -125,7 +127,7 @@ static const char * const fault_type[] =
 static inline int is_cp_in_dump_mode(void);
 static inline int is_ap_in_dump_mode(void);
 
-static SPINLOCK_SECTION volatile sys_dump_lock_t s_dump_spin_lock = {TRAP_DEFAULT_MAGIC_HEAD, SPIN_LOCK_ACQUIRE_INIT, TRAP_DEFAULT_MAGIC_TAIL};
+static SPINLOCK_SECTION volatile sys_dump_lock_t s_dump_spin_lock = {TRAP_DEFAULT_MAGIC_HEAD, SP_UNLOCKED, TRAP_DEFAULT_MAGIC_TAIL};
 
 extern void stop_cpu1_core(void);
 extern void stop_cpu2_core(void);
@@ -438,12 +440,12 @@ void arch_set_enter_exception(void) {
     if( TRAP_DEFAULT_MAGIC_HEAD != s_dump_spin_lock.magic_head 
         || TRAP_DEFAULT_MAGIC_TAIL != s_dump_spin_lock.magic_tail)
     {
-        spinlock_init((spinlock_t *)&s_dump_spin_lock.dump_spin_lock);
+        spin_lock_init((spinlock_t *)&s_dump_spin_lock.dump_spin_lock);
         s_dump_spin_lock.magic_head = TRAP_DEFAULT_MAGIC_HEAD;
         s_dump_spin_lock.magic_tail = TRAP_DEFAULT_MAGIC_TAIL;
     }
 
-    spinlock_acquire(&s_dump_spin_lock.dump_spin_lock, 0xffffffff);  // get smp spin lock before get peterson lock.
+    spin_lock(&s_dump_spin_lock.dump_spin_lock);  // get smp spin lock before get peterson lock.
 
     /* if core1 dump */
     if (rtos_get_core_id() == CPU1_CORE_ID) {
@@ -458,7 +460,7 @@ void arch_set_enter_exception(void) {
 
 void arch_init_exception_magic_status(void) {
     exception_sync_init_early();
-    spinlock_init((spinlock_t *)&s_dump_spin_lock.dump_spin_lock);
+    spin_lock_init((spinlock_t *)&s_dump_spin_lock.dump_spin_lock);
     s_dump_spin_lock.magic_head = TRAP_DEFAULT_MAGIC_HEAD;
     s_dump_spin_lock.magic_tail = TRAP_DEFAULT_MAGIC_TAIL;
 }

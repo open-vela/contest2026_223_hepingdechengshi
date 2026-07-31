@@ -22,6 +22,7 @@ extern "C" {
 #include <common/bk_typedef.h>
 #include <common/bk_err.h>
 
+#include "amp_res_lock.h"
 enum
 {
 	IPC_TEST_CMD = 0,               /* Server <-> Client */
@@ -66,7 +67,7 @@ enum
 #define AMP_RES_CLIENT
 
 
-#include "amp_res_lock.h"
+// #include "amp_res_lock.h"
 
 bk_err_t ipc_init(void);
 

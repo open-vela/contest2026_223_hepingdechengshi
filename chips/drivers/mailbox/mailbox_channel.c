@@ -137,7 +137,7 @@ static u8				mb_chnnl_init_ok = 0;
 
 #if CONFIG_SOC_SMP
 #include "spinlock.h"
-static SPINLOCK_SECTION volatile spinlock_t mb_chnl_spin_lock = SPIN_LOCK_INIT;
+static SPINLOCK_SECTION volatile spinlock_t mb_chnl_spin_lock = SP_UNLOCKED;
 #endif // CONFIG_SOC_SMP
 static inline uint32_t mb_chnl_enter_critical()
 {

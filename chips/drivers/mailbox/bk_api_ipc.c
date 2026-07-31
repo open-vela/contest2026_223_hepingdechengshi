@@ -5,9 +5,9 @@
 #include <os/str.h>
 #include <string.h>
 
-#include "FreeRTOSConfig.h"
-#include "FreeRTOS.h"
-#include "event_groups.h"
+// #include "FreeRTOSConfig.h"
+// #include "FreeRTOS.h"
+// #include "event_groups.h"
 
 #include <modules/pm.h>
 
@@ -78,7 +78,7 @@ typedef union
 
 #if CONFIG_SOC_SMP
 #include "spinlock.h"
-static SPINLOCK_SECTION volatile spinlock_t bk_ipc_spin_lock = SPIN_LOCK_INIT;
+static SPINLOCK_SECTION volatile spinlock_t bk_ipc_spin_lock = SP_UNLOCKED;
 #endif // CONFIG_SOC_SMP
 static inline uint32_t bk_ipc_enter_critical()
 {

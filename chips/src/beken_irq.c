@@ -25,3 +25,13 @@ irqstate_t irqstate(void)
 {
     return 0;
 }
+int port_disable_interrupts_flag(void)
+{
+    return up_irq_save();
+}
+
+void port_enable_interrupts_flag(int val)
+{
+    up_irq_restore(val);
+}
+

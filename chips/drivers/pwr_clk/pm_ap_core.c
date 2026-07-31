@@ -4,7 +4,7 @@
 #include <components/shell_task.h>
 #include "driver/pm_ap_core.h"
 #include <os/mem.h>
-#include "FreeRTOS.h"
+
 
 /*=====================DEFINE  SECTION  START=====================*/
 
