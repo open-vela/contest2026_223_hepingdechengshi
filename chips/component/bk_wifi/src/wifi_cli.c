@@ -3,7 +3,7 @@
 #include "wdrv_cntrl.h"
 #include "wdrv_ipc.h"
 #include "wifi_api.h"
-#include "pbuf.h"
+#include "lwip/pbuf.h"
 #include <components/netif.h>
 #include <components/event.h>
 #include "net.h"

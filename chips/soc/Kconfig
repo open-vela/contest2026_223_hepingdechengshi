@@ -51,3 +51,7 @@ menu "SOC_CONFIG"
 		default n
 
 endmenu
+
+if SOC_BK7258
+source "../vendor/beken/chips/soc/bk7258_ap/Kconfig"
+endif

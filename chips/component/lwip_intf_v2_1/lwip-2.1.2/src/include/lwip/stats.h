@@ -45,6 +45,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+// To be compatible with NUTTX
+#undef opterr
 
 #if LWIP_STATS
 

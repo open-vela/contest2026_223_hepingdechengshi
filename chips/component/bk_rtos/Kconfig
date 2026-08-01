@@ -16,11 +16,11 @@ menu "Bk_rtos"
 	menu "Modify FreeRTOS Config"
 		config FREERTOS
 			bool "Enable FreeRTOS"
-			default y
+			default n
 
 		config FREERTOS_FPU_ENABLE
 			bool "Enable FreeRTOS FPU"
-			default y
+			default n
 
 		config FREERTOS_USE_QUEUE_SETS
 			depends on FREERTOS

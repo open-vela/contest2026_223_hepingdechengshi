@@ -21,7 +21,7 @@
 
 OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm", "elf32-littlearm")
 
-__MSP_STACK_SIZE = (4 << 10);
+__MSP_STACK_SIZE = CONFIG_ARCH_INTERRUPTSTACK;
 __MIN_HEAP_SIZE  = (32 << 10);
 #if CONFIG_MPU
 __MPU_PROTECT_SIZE = 0x20;
@@ -510,6 +510,19 @@ SECTIONS
     } > RAM
 
     bss_size = _bss_end - _bss_start;
+
+#if (CONFIG_SOC_SMP)
+    /* Idle thread stack pool: one slot of CONFIG_IDLETHREAD_STACKSIZE per CPU.
+     * g_cpu_stackalloc is the base; CPU n's stack_alloc is at
+     * g_cpu_stackalloc + CONFIG_IDLETHREAD_STACKSIZE * (n + 1). */
+    .cpu_idle_stacks (NOLOAD) :
+    {
+        . = ALIGN(8);
+        g_cpu_stackalloc = .;
+        . = . + (CONFIG_SMP_NCPUS * CONFIG_IDLETHREAD_STACKSIZE);
+        . = ALIGN(8);
+    } > RAM
+#endif
 
 #if (CONFIG_SOC_SMP)
 	_msp_total_size = __MSP_STACK_SIZE * 2;

@@ -58,40 +58,40 @@ extern "C" {
 #define BK_LOGE( tag, format, ... )         _BK_LOG_PRINTF(BK_LOG_ERROR, tag, format,  ##__VA_ARGS__)
 #define BK_RAW_LOGE( tag, format, ... )     _BK_RAW_PRINTF(BK_LOG_ERROR, tag, format,  ##__VA_ARGS__)
 #else
-#define BK_LOGE(tag, format, ...)           (void)(format, ##__VA_ARGS__)
-#define BK_RAW_LOGE(tag, format, ...)       (void)(format, ##__VA_ARGS__)
+#define BK_LOGE(tag, format, ...)           
+#define BK_RAW_LOGE(tag, format, ...)       
 #endif
 
 #if (BK_LOG_LEVEL >= BK_LOG_WARN)
 #define BK_LOGW( tag, format, ... )         _BK_LOG_PRINTF(BK_LOG_WARN, tag, format,  ##__VA_ARGS__)
 #define BK_RAW_LOGW( tag, format, ... )     _BK_RAW_PRINTF(BK_LOG_WARN, tag, format,  ##__VA_ARGS__)
 #else
-#define BK_LOGW(tag, format, ...)           (void)(format, ##__VA_ARGS__)
-#define BK_RAW_LOGW(tag, format, ...)       (void)(format, ##__VA_ARGS__)
+#define BK_LOGW(tag, format, ...)           
+#define BK_RAW_LOGW(tag, format, ...)       
 #endif
 
 #if (BK_LOG_LEVEL >= BK_LOG_INFO)
 #define BK_LOGI( tag, format, ... )         _BK_LOG_PRINTF(BK_LOG_INFO, tag, format,  ##__VA_ARGS__)
 #define BK_RAW_LOGI( tag, format, ... )     _BK_RAW_PRINTF(BK_LOG_INFO, tag, format,  ##__VA_ARGS__)
 #else
-#define BK_LOGI(tag, format, ...)           (void)(format, ##__VA_ARGS__)
-#define BK_RAW_LOGI(tag, format, ...)       (void)(format, ##__VA_ARGS__)
+#define BK_LOGI(tag, format, ...)           
+#define BK_RAW_LOGI(tag, format, ...)       
 #endif
 
 #if (BK_LOG_LEVEL >= BK_LOG_DEBUG)
 #define BK_LOGD( tag, format, ... )         _BK_LOG_PRINTF(BK_LOG_DEBUG, tag, format,  ##__VA_ARGS__)
 #define BK_RAW_LOGD( tag, format, ... )     _BK_RAW_PRINTF(BK_LOG_DEBUG, tag, format,  ##__VA_ARGS__)
 #else
-#define BK_LOGD(tag, format, ...)           (void)(format, ##__VA_ARGS__)
-#define BK_RAW_LOGD(tag, format, ...)       (void)(format, ##__VA_ARGS__)
+#define BK_LOGD(tag, format, ...)           
+#define BK_RAW_LOGD(tag, format, ...)       
 #endif
 
 #if (BK_LOG_LEVEL >= BK_LOG_VERBOSE)
 #define BK_LOGV( tag, format, ... )         _BK_LOG_PRINTF(BK_LOG_VERBOSE, tag, format, ##__VA_ARGS__)
 #define BK_RAW_LOGV( tag, format, ... )     _BK_RAW_PRINTF(BK_LOG_VERBOSE, tag, format, ##__VA_ARGS__)
 #else
-#define BK_LOGV(tag, format, ...)           (void)(format, ##__VA_ARGS__)
-#define BK_RAW_LOGV(tag, format, ...)       (void)(format, ##__VA_ARGS__)
+#define BK_LOGV(tag, format, ...)           
+#define BK_RAW_LOGV(tag, format, ...)       
 #endif
 
 #define BK_LOG_RAW(format, ...)             _BK_RAW_PRINTF(BK_LOG_NONE, NULL, format, ##__VA_ARGS__)

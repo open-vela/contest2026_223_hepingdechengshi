@@ -122,6 +122,7 @@ endmenu
 
 source "../vendor/beken/chips/drivers/Kconfig"
 source "../vendor/beken/chips/component/Kconfig"
+source "../vendor/beken/chips/soc/Kconfig"
 endif
 
 menu "Arch::Cm33"

@@ -3,11 +3,11 @@ set(srcs)
 #if(CONFIG_WIFI_ENABLE)
 list(APPEND srcs
 	src/wifi_api.c
-	src/wifi_cli.c
+	# src/wifi_cli.c
 	src/wifi_api_ipc.c
 	src/phy_client.c
 	src/phy_notify.c
-	#src/wifi_demo.c
+	# src/wifi_demo.c
 )
 #endif()
 
@@ -39,4 +39,6 @@ endif()
 
 target_sources(arch PRIVATE ${srcs})
 target_include_directories(arch PRIVATE ${incs})
-
+set_source_files_properties(${srcs}
+	TARGET_DIRECTORY arch
+	PROPERTIES COMPILE_OPTIONS "-Wno-undef;-Wno-strict-prototypes")

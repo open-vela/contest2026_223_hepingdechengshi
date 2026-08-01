@@ -84,6 +84,9 @@ add_custom_command(OUTPUT ${ENVIRONMENT_JSON} ${ENVIRONMENT_SH}
 add_custom_target(environment_setup_helper DEPENDS ${ENVIRONMENT_JSON})
 add_dependencies(arch environment_setup_helper)
 
-set_source_files_properties(DIRECTORY component
-	TARGET_DIRECTORY arch
-	PROPERTIES COMPILE_OPTIONS "-Wno-undef;-Wno-strict-prototypes")
+# set_source_files_properties(DIRECTORY component common soc
+# 	TARGET_DIRECTORY arch
+# 	PROPERTIES COMPILE_OPTIONS "-Wno-undef;-Wno-strict-prototypes")
+add_compile_options("-Wno-undef")
+add_compile_options("-Wno-strict-prototypes")
+

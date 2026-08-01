@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #pragma once
-
+#include <stdint.h>
 #include  "cpu_id.h"
 
 void cpu0_set_core_id(void);

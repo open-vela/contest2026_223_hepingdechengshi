@@ -16,6 +16,7 @@
 
 #include <stdarg.h>
 #include <common/bk_err.h>
+#include <nuttx/config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -75,7 +76,7 @@ typedef enum {
 	&& ((m)[4] == 0) && ((m)[5] == 0))
 #define BK_IS_GROUP_MAC(m) (((m)[0] & 0x01))
 
-#define rtos_get_ms_per_tick()               (1000/CONFIG_FREERTOS_TICK_RATE_HZ)
+#define rtos_get_ms_per_tick()               (CONFIG_USEC_PER_TICK / 1000)
 #define rtos_get_tick_per_second()           (1000/rtos_get_ms_per_tick())
 
 #define TICK_PER_SECOND       rtos_get_tick_per_second()

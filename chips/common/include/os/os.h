@@ -1279,8 +1279,8 @@ void rtos_shutdown(void);
 
 
 #if (CONFIG_SOC_SMP)
-#define CPU_ID_OFFSET     1
-
+// #define CPU_ID_OFFSET     0
+#define NUTTX_CPU_ID_OFFSET 0
 /*TODO: Enhanced implementation of cohesion*/
 #ifndef portGET_CORE_ID
 #define portGET_CORE_ID()       (*((volatile uint32_t *)(0x20000000))) /*CPU_ID_ADDR = 0x20000000*/
@@ -1288,7 +1288,7 @@ void rtos_shutdown(void);
 
 static inline int rtos_get_core_id(void)
 {
-	return portGET_CORE_ID() + CPU_ID_OFFSET;
+	return portGET_CORE_ID() + NUTTX_CPU_ID_OFFSET;
 }
 
 /** @brief Creates and starts a new smp thread
