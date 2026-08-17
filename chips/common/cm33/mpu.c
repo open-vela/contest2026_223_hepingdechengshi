@@ -16,7 +16,7 @@
 #include "common/bk_assert.h"
 #include "sdkconfig.h"
 #include "armstar.h"
-
+#include "mpu_api.h"
 #define MPU_MAX_NUM_REGIONS     (16UL)  
 #define MPU_MAX_NUM_ATTRS       (8UL)   
 

@@ -293,6 +293,7 @@ void _othercore_start(void)
 /*----------------------------------------------------------------------------
   Reset Handler called on controller reset
  *----------------------------------------------------------------------------*/
+ #include "arm_internal.h"
 __NO_RETURN void Reset_Handler_Cpu1(void)
 {
   rtos_disable_int();
@@ -302,7 +303,7 @@ __NO_RETURN void Reset_Handler_Cpu1(void)
 
   set_ap_startup_index(AP_ENTER_CPU1_RESET_HANDLER);
   SystemInitCpu1();                             /* CMSIS System Initialization */
-
+  SCB->VTOR = (uint32_t)_vectors;
   __TCM_LOADER_START();
 
 #if CONFIG_CM_BACKTRACE

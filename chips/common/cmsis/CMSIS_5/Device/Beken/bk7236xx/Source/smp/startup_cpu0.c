@@ -29,6 +29,8 @@
 #include <modules/pm.h>
 #include <driver/pwr_clk.h>
 #include "smp.h"
+#include "mpu_api.h"
+#include "easy_log.h"
 
 #if CONFIG_CM_BACKTRACE
 #include "cm_backtrace.h"
@@ -60,6 +62,7 @@ extern uint32_t __vector_core0_table;
 
 extern __NO_RETURN void __PROGRAM_START(void);
 extern void entry_main(void);
+extern void __start(void);
 extern void SystemInitCpu0(void);
 
 /*----------------------------------------------------------------------------
@@ -356,7 +359,7 @@ void set_reboot_tag(uint32_t tag) {
 inline uint32_t get_reboot_tag(void) {
 	return REG_READ(REBOOT_TAG_ADDR);
 }
-
+extern void beken_bringup(void);
 __NO_RETURN void Reset_Handler_Cpu0(void)
 {
   __asm volatile ("cpsid i" : : : "memory"); // rtos_disable_int();
@@ -367,13 +370,17 @@ __NO_RETURN void Reset_Handler_Cpu0(void)
 
   __set_MSPLIM((uint32_t)(&__STACK_LIMIT0));
 
-  SystemInitCpu0();                             /* CMSIS System Initialization */
+  SystemInitCpu0();                             /* CMSIS System Initialization (sets VTOR) */
+
+  __PROGRAM_START();
 
   __TCM_LOADER_START();
-  __PROGRAM_START();                        /* Enter PreMain (C library entry point) */
+
+  /* Enter NuttX primary entry point */
+
 }
 
-void _start(void)
+void _start_unused(void)
 {
 #if CONFIG_MPU
     mpu_enable();

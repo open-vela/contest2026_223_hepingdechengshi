@@ -20,5 +20,6 @@ void cpu0_set_core_id(void);
 void cpu1_set_core_id(void);
 void cpu2_set_core_id(void);
 uint32_t cpu_get_core_id(void);
+uint32_t nuttx_cpu_get_core_id(void);
 // eof
 

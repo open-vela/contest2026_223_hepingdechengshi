@@ -242,7 +242,7 @@ bk_err_t mb_chnl_write(u8 log_chnl, mb_chnl_cmd_t * cmd_buf);
   *
   */
 bk_err_t mb_chnl_ctrl(u8 log_chnl, u8 cmd, void * param);
-
+bk_err_t mb_chnl_set_exception_mode(u8 phy_chnl_idx, u8 exception_mode);
 
 #ifdef __cplusplus
 }

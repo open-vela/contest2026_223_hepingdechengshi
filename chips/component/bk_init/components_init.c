@@ -62,6 +62,9 @@
 
 #define TAG "init"
 
+/* newlib-style global-seed PRNG (defined in chips/src/beken_port.c) */
+extern void native_srand(unsigned int seed);
+
 
 //TODO move to better place
 #if CONFIG_MEM_DEBUG
@@ -105,7 +108,7 @@ int random_init(void)
 {
 #if (CONFIG_TRNG_SUPPORT)
 	BK_LOGV(TAG, "create srand seed\r\n");
-	srand(bk_rand());
+	native_srand(bk_rand());
 #endif
 	return BK_OK;
 }
@@ -272,7 +275,7 @@ void __stack_chk_fail (void)
 }
 
 
-int components_early_init(void)
+int components_early_init_stage1(void)
 {
     set_ap_startup_index(AP_ENTER_COMPONTENT_EARLY_INIT);
 #if CONFIG_RESET_REASON
@@ -282,19 +285,31 @@ int components_early_init(void)
 
 	if(driver_early_init())
 		return BK_FAIL;
-
+	SET_AP_TRACE_MARKER();
+	
 	pm_init();
+	SET_AP_TRACE_MARKER();
 
 	bandgap_init();
 	random_init();
 
-	bk_pm_mailbox_init();
 
-	bk_stack_guard_setup();
     set_ap_startup_index(AP_EXIT_COMPONTENT_EARLY_INIT);
 	return BK_OK;
 }
 
+int components_early_init_stage2(void) {
+	set_ap_startup_index(AP_ENTER_COMPONENT_EARLY_INIT_STAGE_2);
+
+	SET_AP_TRACE_MARKER();
+
+	bk_pm_mailbox_init();
+
+	SET_AP_TRACE_MARKER();
+
+	bk_stack_guard_setup();
+	set_ap_startup_index(AP_EXIT_COMPONENT_EARLY_INIT_STAGE_2);
+}
 __attribute__((weak)) void bk_module_init(void) {
 
 }

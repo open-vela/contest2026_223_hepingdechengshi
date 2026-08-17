@@ -203,7 +203,9 @@ class bk_sdk_project(bk_project):
     def post_package(self) -> None:
         from .bk_ota_pack import ota_pack
 
-        ota_bin = ota_pack()
+        # ota_bin = ota_pack()
+        print("No need to generate OTA bin")
+        ota_bin = "no need"
         self.build_summary += f"ota binary: {ota_bin}\n"
 
     def _copy_bootloader_to_pack_dir(self, pack_dir: Path):

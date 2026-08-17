@@ -24,7 +24,7 @@
 
 #ifndef __CMSIS_GCC_H
 #define __CMSIS_GCC_H
-
+#include <nuttx/config.h>
 /* ignore some GCC warnings */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-conversion"
@@ -157,7 +157,7 @@ __STATIC_FORCEINLINE __NO_RETURN void __cmsis_start(void)
   void * memcpy(void *, const void *, unsigned int);
   void * memset(void *, int, unsigned int);
   extern void _start(void) __NO_RETURN;
-
+  extern void beken_bringup(void) __NO_RETURN;
   typedef struct {
     uint32_t const* src;
     uint32_t* dest;
@@ -185,7 +185,8 @@ __STATIC_FORCEINLINE __NO_RETURN void __cmsis_start(void)
 #if (CONFIG_SOC_SMP)
   __tcm_start();
 #endif
-  _start();
+
+  beken_bringup();
 }
 
 #define __PROGRAM_START           __cmsis_start

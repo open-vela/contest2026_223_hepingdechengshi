@@ -27,7 +27,6 @@
 #include "wdt_driver.h"
 #include "bk_pm_internal_api.h"
 #include "smp.h"
-
 #if CONFIG_CACHE_ENABLE
 #include "cache.h"
 #endif

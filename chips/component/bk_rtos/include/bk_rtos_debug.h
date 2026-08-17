@@ -18,6 +18,7 @@
 extern "C" {
 #endif
 #include <os/os.h>
+#include <sdkconfig.h>
 
 typedef enum
 {
@@ -52,11 +53,17 @@ typedef enum {
     AP_ENTER_APP_WIFI_INIT              = 15,
     AP_ENTER_APP_BLE_INIT               = 16,
     AP_EXIT_BK_INIT                     = 17,
+    AP_ENTER_COMPONENT_EARLY_INIT_STAGE_2       = 18,
+    AP_EXIT_COMPONENT_EARLY_INIT_STAGE_2       = 19,
+    AP_NX_START_PREPARE_DONE = 1000,
+    AP_NX_START_ENTER = 1001,
+    AP_NX_LATE_INIT_START = 1002,
+    AP_NX_LATE_INIT_DONE = 1003,
 
 }ap_startup_type_t;
 
 #if CONFIG_DEBUG_AP_STARTUP
-extern volatile uint32_t  g_ap_startup_flag;
+extern volatile ap_startup_type_t  g_ap_startup_flag;
 #endif
 
 static inline void set_ap_startup_index(ap_startup_type_t index) {
@@ -64,8 +71,16 @@ static inline void set_ap_startup_index(ap_startup_type_t index) {
     g_ap_startup_flag = (uint32_t)index;
 #endif
 }
-
-
+struct ap_trace_marker {
+    const char *filename;
+    int line;
+};
+extern volatile struct ap_trace_marker g_ap_trace;
+static inline void set_ap_trace_marker(const char *filename, int line) {
+    g_ap_trace.filename = filename;
+    g_ap_trace.line = line;
+}
+#define SET_AP_TRACE_MARKER() set_ap_trace_marker(__FILE__, __LINE__);
 void rtos_dump_task_list(void);
 void rtos_dump_stack_memory_usage(void);
 void rtos_dump_task_runtime_stats(void);

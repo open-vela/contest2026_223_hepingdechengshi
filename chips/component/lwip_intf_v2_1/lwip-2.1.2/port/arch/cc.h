@@ -116,9 +116,9 @@ extern int bk_rand();		/* FIXME: move to right place */
 #define LWIP_RAND()        ((uint32_t)bk_rand())
 #endif
 #else
-extern int rand();
+extern int native_rand(void);
 #ifndef LWIP_RAND
-#define LWIP_RAND()        (rand())
+#define LWIP_RAND()        (native_rand())
 #endif
 #endif
 #endif

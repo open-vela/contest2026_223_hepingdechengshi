@@ -1,0 +1,17 @@
+menu "Easy Log"
+
+    config EASY_LOG
+        bool "Enable Easy Log"
+        default y
+        help
+            Enable easy log output via mailbox UART.
+
+    config EASY_LOG_UART_ID
+        depends on EASY_LOG
+        int "Mailbox UART ID for Easy Log"
+        range 0 2
+        default 0
+        help
+            Select the mailbox UART device ID to use for easy log output.
+            0: MB_UART0, 1: MB_UART1, 2: MB_UART2.
+endmenu

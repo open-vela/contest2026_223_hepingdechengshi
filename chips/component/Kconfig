@@ -1,3 +1,6 @@
 source "../vendor/beken/chips/component/bk_wifi_driver/Kconfig"
 source "../vendor/beken/chips/component/bk_wifi/Kconfig"
 source "../vendor/beken/chips/component/lwip_intf_v2_1/Kconfig"
+source "../vendor/beken/chips/component/easy_log/Kconfig"
+source "../vendor/beken/chips/component/bk_pm/Kconfig"
+source "../vendor/beken/chips/component/bk_system/Kconfig"

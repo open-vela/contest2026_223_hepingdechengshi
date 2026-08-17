@@ -47,7 +47,7 @@ typedef void (* mb_uart_isr_t)(void * param);
  * - BK_OK: initialized success.
  * - other: failed, fail code.
  */
-bk_err_t bk_mb_uart_dev_init(u8 id);
+bk_err_t bk_mb_uart_dev_init(u8 id, u8 exception_mode);
 
 /** @brief	  de-initialize the mailbox UART device.
  *
@@ -60,6 +60,7 @@ bk_err_t bk_mb_uart_dev_init(u8 id);
  * - other: failed, fail code.
  */
 bk_err_t bk_mb_uart_dev_deinit(u8 id);
+bk_err_t bk_mb_uart_dev_set_exception_mode(u8 id, u8 enable);
 
 /** @brief	  register rx ISR callback to the mailbox UART device.
  *

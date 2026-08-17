@@ -799,9 +799,9 @@ bk_err_t bk_uart_driver_init(void)
 	uart_statis_init();
 	s_uart_driver_is_init = true;
 
-#ifndef CONFIG_BK_PRINTF_DISABLE
-	bk_printf_init();
-#endif
+// #ifndef CONFIG_BK_PRINTF_DISABLE
+// 	bk_printf_init();
+// #endif
 
 	return BK_OK;
 }

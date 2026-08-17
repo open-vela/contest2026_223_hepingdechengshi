@@ -1279,7 +1279,7 @@ void rtos_shutdown(void);
 
 
 #if (CONFIG_SOC_SMP)
-// #define CPU_ID_OFFSET     0
+#define CPU_ID_OFFSET     1
 #define NUTTX_CPU_ID_OFFSET 0
 /*TODO: Enhanced implementation of cohesion*/
 #ifndef portGET_CORE_ID
@@ -1287,6 +1287,11 @@ void rtos_shutdown(void);
 #endif
 
 static inline int rtos_get_core_id(void)
+{
+	return portGET_CORE_ID() + CPU_ID_OFFSET;
+}
+
+static inline int nuttx_get_core_id(void)
 {
 	return portGET_CORE_ID() + NUTTX_CPU_ID_OFFSET;
 }

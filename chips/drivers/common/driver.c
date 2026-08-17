@@ -289,7 +289,7 @@ int driver_early_init(void)
 #if CONFIG_EFUSE
 	bk_efuse_driver_init();
 #endif
-
+	SET_AP_TRACE_MARKER();
     set_ap_startup_index(AP_EXIT_DRIVER_EARLY_INIT);
 	return 0;
 }
@@ -341,10 +341,10 @@ int driver_init(void) {
 #if CONFIG_MAILBOX_IPC
 	mb_ipc_init();
 #endif
-	bk_ipc_init();
+	// bk_ipc_init();
 #endif
 
-	os_show_memory_config_info();
+	// os_show_memory_config_info();
 
 #if CONFIG_FLASH
 	bk_flash_driver_init();
@@ -374,9 +374,7 @@ int driver_init(void) {
 	bk_spi_driver_init();
 #endif
 
-#if CONFIG_I2C
-	bk_i2c_driver_init();
-#endif
+
 
 #if CONFIG_QSPI
 	bk_qspi_driver_init();

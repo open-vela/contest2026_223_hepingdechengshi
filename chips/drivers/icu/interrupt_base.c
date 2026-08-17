@@ -14,6 +14,7 @@
 
 #include <common/bk_include.h>
 #include <common/bk_compiler.h>
+#include <nuttx/irq.h>
 #include <os/mem.h>
 #include "bk_arm_arch.h"
 #include "arch_interrupt.h"
@@ -24,6 +25,8 @@
 #include <driver/int_types.h>
 #include <driver/int.h>
 #include <common/bk_assert.h>
+#include "irq.h"
+#include "bk7236.h"
 
 #define ICU_RETURN_ON_INVALID_DEVS(dev) do {\
 				if ((dev) >= INT_SRC_NONE) {\
@@ -33,6 +36,16 @@
 
 const icu_int_map_t icu_int_map_table[] = ICU_DEV_MAP;
 
+int bk_isr_common_handler(int irq, void* context, void* arg) {
+	(void)context;
+	(void)arg;
+	int_group_isr_t isr_cb;
+	isr_cb = arch_interrupt_get_handler(irq - NVIC_IRQ_FIRST);
+	if (isr_cb != NULL) {
+		(*(isr_cb))();
+	}
+	return 0;
+}
 #if CONFIG_ARCH_RISCV || CONFIG_ARCH_CM33
 bk_err_t bk_int_isr_register(icu_int_src_t src, int_group_isr_t isr_callback, void*arg)
 {
@@ -42,11 +55,11 @@ bk_err_t bk_int_isr_register(icu_int_src_t src, int_group_isr_t isr_callback, vo
 	const icu_int_map_t *icu_int_map = &icu_int_map_table[src];
 
 	uint8_t int_num = icu_int_map->int_bit;
-
-	arch_interrupt_unregister_int(int_num);
+	// arch_interrupt_unregister_int(int_num);
 	arch_interrupt_register_int(int_num,isr_callback);
-	arch_interrupt_set_priority(int_num, icu_int_map->int_prio);
+	// arch_interrupt_set_priority(int_num, icu_int_map->int_prio);
 
+	irq_attach(int_num + NVIC_IRQ_FIRST, bk_isr_common_handler, arg);
 	return 0;
 }
 void interrupt_init(void)

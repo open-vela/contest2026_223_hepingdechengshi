@@ -33,6 +33,7 @@ typedef struct
 	u8		tx_hdr_cmd;
 	u32		rx_fault_cnt;
 	u32		tx_fault_cnt;
+	u8 exception_mode;
 } mb_phy_chnl_cb_t;
 
 
@@ -141,22 +142,27 @@ static SPINLOCK_SECTION volatile spinlock_t mb_chnl_spin_lock = SP_UNLOCKED;
 #endif // CONFIG_SOC_SMP
 static inline uint32_t mb_chnl_enter_critical()
 {
+#if 0
 	uint32_t flags = rtos_disable_int();
 
 #if CONFIG_SOC_SMP
 	spin_lock(&mb_chnl_spin_lock);
 #endif // CONFIG_SOC_SMP
-
+#endif
+	uint32_t flags = enter_critical_section();;
 	return flags;
 }
 
 static inline void mb_chnl_exit_critical(uint32_t flags)
 {
+#if 0
 #if CONFIG_SOC_SMP
 	spin_unlock(&mb_chnl_spin_lock);
 #endif // CONFIG_SOC_SMP
 
 	rtos_enable_int(flags);
+#endif
+	leave_critical_section(flags);
 }
 
 /* =====================      physical channel functions      ==================*/
@@ -457,14 +463,16 @@ static void mb_phy_chnl_start_tx(u8 log_chnl)
 
 	if(phy_chnl_ptr->tx_state == CHNL_STATE_IDLE)
 	{
-		phy_chnl_ptr->tx_state = CHNL_STATE_BUSY;		/* MUST set channel state to BUSY firstly. */
+		if (phy_chnl_ptr->exception_mode == 0) {
+			phy_chnl_ptr->tx_state =
+				CHNL_STATE_BUSY; /* MUST set channel state to BUSY firstly. */
+		}
 		/* start_tx->tx_cmd->tx_isr callback->mb_chnl_write->start_tx, it is a loop.
 		   break the loop by setting the phy_chnl_cb.tx_state to busy. */
 
 		ret_code = mb_phy_chnl_tx_cmd(log_chnl);
 
-		if(ret_code != 0)
-		{
+		if (ret_code != 0) {
 			phy_chnl_ptr->tx_state = CHNL_STATE_IDLE;
 		}
 	}
@@ -568,8 +576,8 @@ bk_err_t mb_chnl_init(void)
 	{
 		phy_chnl_x_cb[i].tx_state = CHNL_STATE_IDLE;
 
+		
 		log_chnl_cb_x = (mb_log_chnl_cb_t *)(phy_chnl_log_chnl_list[i]);
-
 		memset(log_chnl_cb_x, 0, sizeof(mb_log_chnl_cb_t) * phy_chnl_log_chnl_num[i]);
 
 		for(j = 0; j < phy_chnl_log_chnl_num[i]; j++)
@@ -841,3 +849,8 @@ bk_err_t mb_chnl_ctrl(u8 log_chnl, u8 cmd, void * param)
 	return BK_OK;
 }
 
+bk_err_t mb_chnl_set_exception_mode(u8 phy_chnl_idx, u8 exception_mode)
+{
+	phy_chnl_x_cb[phy_chnl_idx].exception_mode = exception_mode;
+	return BK_OK;
+}

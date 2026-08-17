@@ -21,7 +21,8 @@ extern "C" {
 //TODO move it to better place
 int memory_init(void);
 int components_init(void);
-int components_early_init(void);
+int components_early_init_stage1(void);
+int components_early_init_stage2(void);
 
 #ifdef __cplusplus
 }

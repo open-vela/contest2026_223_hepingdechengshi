@@ -148,7 +148,21 @@ SECTIONS
         *libbk_wifi.a:*(.text*)
         __wifi_dp_code_end = .;
 
+        . = ALIGN(4);
+        *(.text)
+        *(".text.*")
+
         _etext = .;
+        . = ALIGN(4);
+    } > FLASH
+
+    .rodata :
+    {
+        . = ALIGN(4);
+        *(.rodata)
+        *(".rodata.*")
+        *(.srodata)
+        *(".srodata.*")
         . = ALIGN(4);
     } > FLASH
 
@@ -242,7 +256,10 @@ SECTIONS
     #endif
         __zero_table_end__ = .;
     } > FLASH
-
+    .note.gnu.build-id :
+    {
+        KEEP(*(.note.gnu.build-id))
+    } > FLASH
 #if (CONFIG_BT_REUSE_MEDIA_MEMORY)
     .hardware_acc (NOLOAD):
     {

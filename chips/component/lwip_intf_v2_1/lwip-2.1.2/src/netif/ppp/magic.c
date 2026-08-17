@@ -223,7 +223,7 @@ void magic_init(void) {
   magic_randomseed += sys_jiffies();
 #ifndef LWIP_RAND
   /* Initialize the Borland random number generator. */
-  srand((unsigned)magic_randomseed);
+  native_srand((unsigned)magic_randomseed);
 #endif /* LWIP_RAND */
 }
 
@@ -264,7 +264,7 @@ u32_t magic(void) {
 #ifdef LWIP_RAND
   return LWIP_RAND() + magic_randomseed;
 #else /* LWIP_RAND */
-  return ((u32_t)rand() << 16) + (u32_t)rand() + magic_randomseed;
+  return ((u32_t)native_rand() << 16) + (u32_t)native_rand() + magic_randomseed;
 #endif /* LWIP_RAND */
 }
 

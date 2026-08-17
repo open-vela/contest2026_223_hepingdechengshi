@@ -373,14 +373,16 @@ static void pm_cp1_mailbox_rx_isr(int *pm_mb, mb_chnl_cmd_t *cmd_buf)
 			}
 			else if(cmd_buf->param1 == 0x0)
 			{
-				used_count = bk_psram_heap_get_used_count();
+				// TODO:
+				// Suport get used count from Nuttx
+				// used_count = bk_psram_heap_get_used_count();
 				//bk_pm_ap_psram_power_state_handle_callback(0x1);//recovery media using psram
-				pm_cp1_mailbox_send_data(PM_CP1_PSRAM_MALLOC_STATE_CMD,0x1,used_count,0);
+				// pm_cp1_mailbox_send_data(PM_CP1_PSRAM_MALLOC_STATE_CMD,0x1,used_count,0);
 			}
 			//BK_LOGD(NULL, "cp1 bk_psram_heap_get_used_count[%d]\r\n", bk_psram_heap_get_used_count());
 			break;
 		case PM_CP1_DUMP_PSRAM_MALLOC_INFO_CMD:
-			bk_psram_heap_get_used_state();
+			// bk_psram_heap_get_used_state();
 			break;
 		case PM_CP1_RECOVERY_CMD:
             msg.event= PM_AP_CORE_AP_RECOVERY;

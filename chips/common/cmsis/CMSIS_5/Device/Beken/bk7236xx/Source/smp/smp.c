@@ -12,31 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "bk7236xx.h"
-#include <stdint.h>
 #include "smp.h"
-#include "soc/soc.h"
+#include "bk7236xx.h"
 #include "os/os.h"
+#include "soc/soc.h"
+#include <stdint.h>
 
-void cpu0_set_core_id(void)
-{
-	REG_WRITE(CPU_ID_ADDR, CPU0_CORE_ID);
-}
+void cpu0_set_core_id(void) { REG_WRITE(CPU_ID_ADDR, CPU0_CORE_ID); }
 
-void cpu1_set_core_id(void)
-{
-	REG_WRITE(CPU_ID_ADDR, CPU1_CORE_ID);
-}
+void cpu1_set_core_id(void) { REG_WRITE(CPU_ID_ADDR, CPU1_CORE_ID); }
 
-void cpu2_set_core_id(void)
-{
-	REG_WRITE(CPU_ID_ADDR, CPU2_CORE_ID);
-}
+void cpu2_set_core_id(void) { REG_WRITE(CPU_ID_ADDR, CPU2_CORE_ID); }
 
-uint32_t cpu_get_core_id(void)
-{
-	return rtos_get_core_id();
-}
+uint32_t cpu_get_core_id(void) { return rtos_get_core_id(); }
+uint32_t nuttx_cpu_get_core_id(void) { return nuttx_get_core_id(); }
 
 // eof
-

@@ -3,6 +3,8 @@
 #include "lwip/pbuf.h"
 #include "lwip/stats.h"
 
+extern int native_rand(void);
+
 #if !LWIP_STATS || !MEM_STATS ||!MEMP_STATS
 #error "This tests needs MEM- and MEMP-statistics enabled"
 #endif
@@ -126,13 +128,13 @@ START_TEST(test_pbuf_queueing_bigger_than_64k)
   LWIP_UNUSED_ARG(_i);
 
   for(i = 0; i < TESTBUFSIZE_1; i++) {
-    testbuf_1[i] = (u8_t)rand();
+    testbuf_1[i] = (u8_t)native_rand();
   }
   for(i = 0; i < TESTBUFSIZE_2; i++) {
-    testbuf_2[i] = (u8_t)rand();
+    testbuf_2[i] = (u8_t)native_rand();
   }
   for(i = 0; i < TESTBUFSIZE_3; i++) {
-    testbuf_3[i] = (u8_t)rand();
+    testbuf_3[i] = (u8_t)native_rand();
   }
 
   p1 = pbuf_alloc(PBUF_RAW, TESTBUFSIZE_1, PBUF_POOL);

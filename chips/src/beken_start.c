@@ -34,6 +34,16 @@
 #include <arch/board/board.h>
 #include "arm_internal.h"
 #include "beken_uart.h"
+#include "os/os.h"
+#include "bk_rtos_debug.h"
+#include "armstar.h"
+/* Force the Beken per-CPU vector table objects to be linked into the
+ * final ELF.  They live in libarch.a and would otherwise be discarded
+ * because no symbol from startup_cpu*.o is directly referenced.
+ */
+extern void Reset_Handler_Cpu0(void);
+static void (*__bk_ref_cpu0_reset)(void)
+    __attribute__((used)) = &Reset_Handler_Cpu0;
 
 #define showprogress(c) arm_lowputc(c)
 
@@ -54,19 +64,18 @@ void __start(void)
 {
   uint32_t *dest;
   const uint32_t *src;
-
+  set_ap_startup_index(AP_NX_START_ENTER);
   /* Disable all interrupts at the very beginning to prevent any ISR
    * from firing during initialization. This is critical because HAL_Init()
    * and other early initialization code may trigger hardware interrupts
    * before NuttX interrupt system is ready.
    */
   __asm volatile ("cpsid i" : : : "memory");
-
-  /* Configure Vector Table Offset Register (VTOR) for Cortex-M33.
-   * The vector table is located at the start of flash (0x12010000).
+  SCB->VTOR = (uint32_t)_vectors;
+  /* SCB_VTOR is set by each CPU's reset handler before entering __start().
+   * CPU0: Reset_Handler_Cpu0 → SCB->VTOR = &__vector_core0_table
+   * CPU1: Reset_Handler_Cpu1 → enters via callback, not __start()
    */
-#define SCB_VTOR (*((volatile uint32_t *)0xE000ED08))
-  SCB_VTOR = (uint32_t)_vectors;
 
   /* Configure FPU before any floating point operations */
 
@@ -126,8 +135,8 @@ void __start(void)
   /* nx_start() will initialize the interrupt system and enable interrupts.
    * Interrupts remain disabled until the system is fully ready.
    */
-  nx_start();
-  
+  rtos_start_scheduler();
+
   showprogress('X'); /* should never reach here */
 
   for (; ; );
@@ -136,6 +145,3 @@ void __start(void)
 #define HEAP_BASE      ((uintptr_t)_ebss + CONFIG_IDLETHREAD_STACKSIZE)
 const uintptr_t g_idle_topstack = HEAP_BASE;
 
-void up_initialize(void) {
-
-}

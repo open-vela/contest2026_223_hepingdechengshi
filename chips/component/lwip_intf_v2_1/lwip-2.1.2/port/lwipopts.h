@@ -240,7 +240,7 @@ uint32_t beken_random(void)
 {
   if (random_mock == -1) {
     /* fall back to default "port/unix" rand (if other tests are launched with IP_NAPT ON) */
-    return rand();
+    return native_rand();
   }
   return random_mock;
 }

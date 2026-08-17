@@ -217,12 +217,6 @@ menu "Bk_rtos"
 
 	endmenu
 
-    menu "Modify System Config"
 
-		config DEBUG_AP_STARTUP
-			bool "Enable debug ap startup"
-			default n
-
-	endmenu
 
 endmenu

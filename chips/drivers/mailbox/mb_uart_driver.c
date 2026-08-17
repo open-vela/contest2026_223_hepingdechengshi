@@ -110,6 +110,9 @@ typedef struct
 	u8				rx_buf[2 * MB_UART_RX_FIFO_LEN + 1];
 	u16				rx_rd_idx;
 	u16				rx_wr_idx;
+
+	/* Extra state */
+	u8 exception_mode;
 } mb_uart_cb_t;
 
 #ifdef MB_UART_CRC8_ENABLE
@@ -561,8 +564,9 @@ static bk_err_t mb_uart_send_data_trigger(mb_uart_cb_t *chnl_cb)
 		mb_uart_exit_critical(flag);
 		return BK_OK;
 	}
-
-	chnl_cb->tx_in_process = 1;
+	if (chnl_cb->exception_mode == 0) {
+		chnl_cb->tx_in_process = 1;
+	}
 
 	mb_uart_exit_critical(flag);
 
@@ -608,8 +612,9 @@ static bk_err_t mb_uart_send_state_trigger(mb_uart_cb_t *chnl_cb)
 		mb_uart_exit_critical(flag);
 		return BK_OK;
 	}
-
-	chnl_cb->tx_in_process = 1;
+	if (chnl_cb->exception_mode == 0) {
+		chnl_cb->tx_in_process = 1;
+	}
 
 	mb_uart_exit_critical(flag);
 
@@ -759,7 +764,7 @@ static const u8  		mb_uart_chnl_id[MB_UART_MAX] = {
 	MB_CHNL_UART1
 };
 
-bk_err_t bk_mb_uart_dev_init(u8 id)
+bk_err_t bk_mb_uart_dev_init(u8 id, u8 exception_mode)
 {
 	bk_err_t    ret_val;
 
@@ -767,7 +772,7 @@ bk_err_t bk_mb_uart_dev_init(u8 id)
 		return BK_ERR_PARAM;
 
 	ret_val = mb_uart_init(&mb_uart_cb[id], mb_uart_chnl_id[id]);
-
+	bk_mb_uart_dev_set_exception_mode(id, exception_mode);
 	mb_uart_send_state_trigger(&mb_uart_cb[id]);
 
 	return ret_val;
@@ -784,7 +789,11 @@ bk_err_t bk_mb_uart_dev_deinit(u8 id)
 
 	return ret_val;
 }
-
+bk_err_t bk_mb_uart_dev_set_exception_mode(u8 id, u8 enable)
+{
+	mb_uart_cb[id].exception_mode = enable;
+	return BK_OK;
+}
 bk_err_t bk_mb_uart_register_rx_isr(u8 id, mb_uart_isr_t isr, void *param)
 {
 	if(id >= MB_UART_MAX)
