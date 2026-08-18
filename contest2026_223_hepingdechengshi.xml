@@ -8,10 +8,6 @@
   -->
   <include name="openvela.xml"/>
 
-  <project path="contest2026_223_hepingdechengshi" name="contest2026_223_hepingdechengshi">
-    <linkfile src="app/hello_app" dest="packages/demos/contest2026_223_hello_app"/>
-    <linkfile src="quickapp/hello_quickapp" dest="packages/apps/contest2026_223_hello_quickapp"/>
-	<linkfile src="chips" dest="vendor/beken/chips"/>
-	<linkfile src="boards" dest="vendor/beken/boards"/>
+  <project path="vendor/beken/" name="contest2026_223_hepingdechengshi">
   </project>
 </manifest>
