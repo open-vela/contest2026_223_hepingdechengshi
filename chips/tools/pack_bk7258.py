@@ -20,12 +20,12 @@ import sys
 from pathlib import Path
 
 # 脚本位于 vendor/beken/chips/tools/，项目根为上 4 级
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 OBJCOPY    = ROOT / "prebuilts/gcc/linux-x86_64/arm-none-eabi/bin/arm-none-eabi-objcopy"
 AP_ELF     = ROOT / "cmake_out/bk7258_ap_nsh/nuttx"
-CP_ELF     = ROOT / "vendor/beken/chips/elf/cp/app.elf"
-BOOTLOADER = ROOT / "vendor/beken/chips/cp/bk_libs/bk7258/bootloader/normal_bootloader/bootloader.bin"
+CP_BIN     = ROOT / "vendor/beken/chips/cp/components/bk_libs/bk7258/app/app.bin"
+BOOTLOADER = ROOT / "vendor/beken/chips/cp/components/bk_libs/bk7258/bootloader/normal_bootloader/bootloader.bin"
 
 OUT_DIR = ROOT / "cmake_out/package"
 ALL_APP = OUT_DIR / "all-app.bin"
@@ -49,17 +49,17 @@ def main() -> None:
     # 前置检查
     bl = BOOTLOADER
     for p, label in [(OBJCOPY, "objcopy"), (AP_ELF, "AP ELF (nuttx)"),
-                     (CP_ELF, "CP ELF"), (bl, "bootloader")]:
+                     (CP_BIN, "CP BIN"), (bl, "bootloader")]:
         if not Path(p).exists():
             sys.exit(f"ERROR: {label} not found:\n  {p}")
 
     tmp = OUT_DIR / "tmp"
     tmp.mkdir(parents=True, exist_ok=True)
 
-    # 1. 转换 ELF → bin
-    print("=== ELF → bin ===")
+    # 1. 转换 AP ELF 并复制 CP/bootloader 镜像
+    print("=== 准备固件镜像 ===")
     objcopy(AP_ELF, tmp / "app1.bin")
-    objcopy(CP_ELF, tmp / "app.bin")
+    shutil.copy2(CP_BIN, tmp / "app.bin")
     shutil.copy2(bl, tmp / "bootloader.bin")
     print(f"  {'bootloader.bin':30s}    copied  ({(tmp / 'bootloader.bin').stat().st_size:,} bytes)")
 

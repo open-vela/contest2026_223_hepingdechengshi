@@ -17,16 +17,20 @@
  * under the License.
  *
  ****************************************************************************/
+#include "beken_irq.h"
+#include "bk7236.h"
+#include "bk_private/bk_uart.h"
+#include "driver/hal/hal_uart_types.h"
 #include "driver/uart.h"
 #include "gpio_driver.h"
 #include <nuttx/arch.h>
+#include <nuttx/irq.h>
 #include <nuttx/serial/serial.h>
 #include <spinlock.h>
-/* BK7258 AP 没有物理 UART，串口输出通过 mailbox FIFO 发到 CP。
- * uart_ll_write_byte() / uart_ll_is_fifo_write_ready() 是 LL 层
- * 内联函数，直接写硬件寄存器（hw->fifo_port.v = data）。
- */
-
+typedef struct bk_uart_priv {
+  uart_id_t uart_id;
+  int uart_irq;
+} bk_uart_priv_t;
 static bool s_printf_uart_init = false;
 
 void arm_lowputc(char ch) {
@@ -77,21 +81,97 @@ bk_err_t beken_uart_init(void) {
   return ret;
 }
 
-int console_uart_setup(FAR struct uart_dev_s *dev) { (void)dev; }
+/* UART interrupt status bits (see soc/bk7258_ap/soc/uart_struct.h, int_status).
+ */
+#define UART_INT_TX_FIFO_NEED_WRITE (1u << 0) /* tx_fifo_need_write */
+#define UART_INT_RX_FIFO_NEED_READ (1u << 1)  /* rx_fifo_need_read  */
+#define UART_INT_RX_FINISH (1u << 6)          /* rx_finish          */
+
+static int beken_uart_interrupt(int irq, void *context, void *arg) {
+  struct uart_dev_s *dev = (struct uart_dev_s *)arg;
+  uint32_t int_status;
+  uint32_t int_enable;
+  uint32_t status;
+
+  /* Read the pending interrupt status, mask off the interrupts that are not
+   * enabled, then clear the pending bits.  This mirrors the sequence used by
+   * the Beken uart_isr_common() and keeps the UART1 status register drained.
+   */
+  struct bk_uart_priv *priv = (struct bk_uart_priv *)dev->priv;
+  int_status = uart_get_interrupt_status(priv->uart_id);
+  int_enable = uart_get_int_enable_status(priv->uart_id);
+  status = int_status & int_enable;
+  uart_clear_interrupt_status(priv->uart_id, int_status);
+
+  /* Receive data available (rx_fifo_need_read | rx_finish). */
+
+  if (status & (UART_INT_RX_FIFO_NEED_READ | UART_INT_RX_FINISH)) {
+    uart_recvchars(dev);
+  }
+
+  /* Transmit FIFO needs data (tx_fifo_need_write). */
+
+  if (status & UART_INT_TX_FIFO_NEED_WRITE) {
+    uart_xmitchars(dev);
+  }
+
+  return OK;
+}
+int console_uart_setup(FAR struct uart_dev_s *dev) {
+  (void)dev;
+  return OK;
+}
 void console_uart_shutdown(FAR struct uart_dev_s *dev) {}
-int console_uart_attach(FAR struct uart_dev_s *dev) { return 0; }
-void console_uart_detach(FAR struct uart_dev_s *dev) {}
+int console_uart_attach(FAR struct uart_dev_s *dev) {
+  struct bk_uart_priv *priv = dev->priv;
+  irq_attach(priv->uart_irq, beken_uart_interrupt, dev);
+  return 0;
+}
+void console_uart_detach(FAR struct uart_dev_s *dev) {
+  struct bk_uart_priv *priv = dev->priv;
+  irq_detach(priv->uart_irq);
+}
 int console_uart_ioctl(FAR struct file *filep, int cmd, unsigned long arg) {
   return 0;
 }
 int console_uart_receive(FAR struct uart_dev_s *dev, FAR unsigned int *status) {
+  struct bk_uart_priv *priv = dev->priv;
+  int ch = uart_read_byte(priv->uart_id);
 
+  if (status != NULL) {
+    *status = 0;
+  }
+
+  return ch;
 }
-void console_uart_send(FAR struct uart_dev_s *dev, int ch) {}
-void console_uart_rxint(FAR struct uart_dev_s *dev, bool enable) {}
-void console_uart_txint(FAR struct uart_dev_s *dev, bool enable) {}
-bool console_uart_rxavailable(FAR struct uart_dev_s *dev) { return false; }
-bool console_uart_txempty(FAR struct uart_dev_s *dev) { return false; }
+void console_uart_send(FAR struct uart_dev_s *dev, int ch) {
+  struct bk_uart_priv *priv = dev->priv;
+  uart_write_byte(priv->uart_id, (uint8_t)ch);
+}
+void console_uart_rxint(FAR struct uart_dev_s *dev, bool enable) {
+  struct bk_uart_priv *priv = dev->priv;
+  if (enable) {
+    bk_uart_enable_rx_interrupt(priv->uart_id);
+  } else {
+    bk_uart_disable_rx_interrupt(priv->uart_id);
+  }
+}
+void console_uart_txint(FAR struct uart_dev_s *dev, bool enable) {
+  struct bk_uart_priv *priv = dev->priv;
+  if (enable) {
+    bk_uart_enable_tx_interrupt(priv->uart_id);
+  } else {
+    bk_uart_disable_tx_interrupt(priv->uart_id);
+  }
+}
+bool console_uart_rxavailable(FAR struct uart_dev_s *dev) {
+  struct bk_uart_priv *priv = dev->priv;
+  return uart_read_ready(priv->uart_id) == BK_OK;
+}
+bool console_uart_txempty(FAR struct uart_dev_s *dev) {
+  struct bk_uart_priv *priv = dev->priv;
+  return bk_uart_is_tx_over(priv->uart_id);
+}
 
 /* Call to release some resource about the device when device was close
  * and unregistered.
@@ -101,7 +181,22 @@ int console_uart_release(FAR struct uart_dev_s *dev) { return 0; }
 
 ssize_t console_uart_recvbuf(FAR struct uart_dev_s *dev, FAR void *buf,
                              size_t len) {
-  return 0;
+  uint8_t *p = (uint8_t *)buf;
+  size_t n;
+
+  /* Drain bytes straight out of the hardware RX FIFO.  The Beken sw-kfifo
+   * path (bk_uart_read_bytes) is not used here because the glue-layer ISR
+   * replaces uart_isr_common() and therefore never fills it.
+   */
+
+  for (n = 0; n < len; n++) {
+    int ret = uart_read_byte_ex(UART_ID_1, &p[n]);
+    if (ret == -1) {
+      break;
+    }
+  }
+
+  return (ssize_t)n;
 }
 
 /* This method will send multiple bytes.
@@ -110,9 +205,12 @@ ssize_t console_uart_recvbuf(FAR struct uart_dev_s *dev, FAR void *buf,
 
 ssize_t console_uart_sendbuf(FAR struct uart_dev_s *dev, FAR const void *buf,
                              size_t len) {
-  return len;
+  bk_uart_write_bytes(UART_ID_1, buf, len);
+  return (ssize_t)len;
 }
-bool console_uart_txready(FAR struct uart_dev_s *dev) { return true; }
+bool console_uart_txready(FAR struct uart_dev_s *dev) {
+  return uart_write_ready(UART_ID_1) == BK_OK;
+}
 
 char console_uart_tx_buffer[4096];
 char console_uart_rx_buffer[4096];
@@ -134,6 +232,12 @@ struct uart_ops_s g_console_uart_ops = {
     .sendbuf = console_uart_sendbuf,
 
 };
+bk_uart_priv_t uart_priv_array[3] = {
+    {.uart_id = UART_ID_0, .uart_irq = 0xFFFFFFFF},
+    {.uart_id = UART_ID_1, .uart_irq = IRQ_NORMAL(UART1_IRQn)},
+    {.uart_id = UART_ID_2, .uart_irq = IRQ_NORMAL(UART2_IRQn)},
+
+};
 SPINLOCK_SECTION uart_dev_t g_console_uart_dev = {
     .ops = &g_console_uart_ops,
     .xmit =
@@ -151,6 +255,7 @@ SPINLOCK_SECTION uart_dev_t g_console_uart_dev = {
             .tail = 0,
         },
     .isconsole = true,
+    .priv = &uart_priv_array[1],
 
 };
 

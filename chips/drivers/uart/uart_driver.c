@@ -673,6 +673,7 @@ uint32_t uart_get_length_in_buffer(uart_id_t id)
 	return kfifo_data_size(s_uart_rx_kfifo[id]);
 }
 
+#ifndef NUTTX_BUILD
 static void uart_isr_register_functions(uart_id_t id)
 {
 	switch(id)
@@ -690,6 +691,7 @@ static void uart_isr_register_functions(uart_id_t id)
 			break;
 	}
 }
+#endif
 
 uint32_t uart_id_to_pm_uart_id(uint32_t uart_id)
 {
@@ -1091,7 +1093,9 @@ bk_err_t bk_uart_init(uart_id_t id, const uart_config_t *config)
 #if CONFIG_SOC_BK7236XX || (CONFIG_SOC_BK7239XX) || (CONFIG_SOC_BK7286XX)
 	uart_hal_disable_tx_interrupt(&s_uart[id].hal, id);
 	uart_hal_clear_id_tx_interrupt_status(&s_uart[id].hal, id);
+#ifndef NUTTX_BUILD
 	uart_isr_register_functions(id);
+#endif
 	s_uart[id].hal.id = id;
 	uart_hal_init(&s_uart[id].hal);
 #endif

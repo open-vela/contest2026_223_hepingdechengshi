@@ -43,11 +43,14 @@ void up_irqinitialize(void) {
 }
 void up_enable_irq(int irq) {
   // enable interrupt with irq
-  arch_int_enable_irq(irq);
+  if (irq >= NVIC_IRQ_FIRST) {
+    arch_int_enable_irq(irq);
+  }
 }
 void up_disable_irq(int irq) {
-  // disable interrupt with irq
-  arch_int_disable_irq(irq);
+  if (irq >= NVIC_IRQ_FIRST) {
+    arch_int_disable_irq(irq);
+  }
 }
 #ifdef CONFIG_ARCH_IRQPRIO
 int up_prioritize_irq(int irq, int priority) {
@@ -60,4 +63,3 @@ irqstate_t irqstate(void)
 {
     return __get_xPSR();
 }
-

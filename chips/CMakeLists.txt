@@ -174,7 +174,7 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bk7258_ap/)
 message(objcopy ${CMAKE_OBJCOPY})
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/bk7258/app.bin"
-    COMMAND "${CMAKE_OBJCOPY}" -O binary "${NUTTX_CHIP_ABS_DIR}/elf/cp/app.elf" "${CMAKE_BINARY_DIR}/bk7258/app.bin"
+    COMMAND "cp" "${NUTTX_CHIP_ABS_DIR}/cp/components/bk_libs/bk7258/app/app.bin" "${CMAKE_BINARY_DIR}/bk7258/app.bin"
     COMMENT "Generate cp-app.bin"
     VERBATIM
 )
@@ -192,6 +192,7 @@ add_custom_target(
     nuttx_post_build ALL
     DEPENDS bk_package bk_app_bin
 )
+target_compile_definitions(arch PRIVATE -DNUTTX_BUILD)
 target_compile_options(arch PRIVATE 
     $<$<COMPILE_LANGUAGE:C>:-mcpu=cortex-m33+nodsp -g>
     $<$<COMPILE_LANGUAGE:CXX>:-mcpu=cortex-m33+nodsp -g>)
