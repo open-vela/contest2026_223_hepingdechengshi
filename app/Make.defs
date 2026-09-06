@@ -1,0 +1,1 @@
+include $(wildcard $(APPDIR)/vendor/beken/app/*/Make.defs)

@@ -1,0 +1,8 @@
+menu "bk peripheral"
+	source "../vendor/beken/chips/component/bk_peripheral/src/lcd/rgb/Kconfig"
+	source "../vendor/beken/chips/component/bk_peripheral/src/lcd/mcu/Kconfig"
+	source "../vendor/beken/chips/component/bk_peripheral/src/lcd/qspi/Kconfig"
+	source "../vendor/beken/chips/component/bk_peripheral/src/lcd/spi/Kconfig"
+	source "../vendor/beken/chips/component/bk_peripheral/src/dvp/Kconfig"
+	source "../vendor/beken/chips/component/bk_peripheral/src/tp/Kconfig" 
+endmenu

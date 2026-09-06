@@ -16,6 +16,7 @@
 #include "sdkconfig.h"
 #include "mbox0_drv.h"
 #include "driver/mailbox_types.h"
+#include <syslog.h>
 
 extern void crosscore_mb_rx_isr(mailbox_data_t *data);
 
@@ -31,18 +32,26 @@ void crosscore_smp_cmd_handler(uint8_t src_core, uint32_t cmd)
 	crosscore_mb_rx_isr(&data);
 }
 
-bk_err_t bk_mailbox_master_send(mailbox_data_t *data, uint8_t src, uint8_t dst)
-{
-	mbox0_message_t msg;
+bk_err_t bk_mailbox_master_send(mailbox_data_t *data, uint8_t src,
+                                uint8_t dst) {
+  mbox0_message_t msg;
 
-	if(dst > CONFIG_CPU_CNT)
-		return BK_ERR_PARAM;
+  if (dst > CONFIG_CPU_CNT)
+#ifdef NUTTX_BUILD
+  {
+    syslog(LOG_ERR, "bk_mailbox_master_send error dst:%d", dst);
+    return BK_ERR_PARAM;
+  }
 
-	msg.dest_cpu = dst;
-	msg.data[0] = data->param2;  /* cmd id. */
-	msg.data[1] = 0;
+#else
+    return BK_ERR_PARAM;
+#endif
 
-	return mbox0_drv_send_message(&msg);
+  msg.dest_cpu = dst;
+  msg.data[0] = data->param2; /* cmd id. */
+  msg.data[1] = 0;
+
+  return mbox0_drv_send_message(&msg);
 }
 
 bk_err_t bk_mailbox_cc_init_on_current_core(int id)

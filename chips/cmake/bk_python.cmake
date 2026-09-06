@@ -22,7 +22,7 @@
 #   )
 #
 # Required variables in the calling scope (set in chips/CMakeLists.txt before
-# the enclosing add_subdirectory()): BEKEN_SOC_NAME, NUTTX_CHIP_ABS_DIR,
+# the enclosing add_subdirectory()): BEKEN_SOC_NAME, BEKEN_CHIPS_DIR,
 # NUTTX_BOARD_ABS_DIR, NUTTX_CONFIG, Python3_EXECUTABLE.
 # ##############################################################################
 
@@ -39,7 +39,7 @@ function(bk_add_python_command)
     endif()
 
     # PYTHONPATH: bk_py_libs first, then any caller-supplied dirs.
-    set(_pythonpath "${NUTTX_CHIP_ABS_DIR}/tools/env_tools/bk_py_libs")
+    set(_pythonpath "${BEKEN_CHIPS_DIR}/tools/env_tools/bk_py_libs")
     foreach(_p IN LISTS BKPY_EXTRA_PYTHONPATH)
         set(_pythonpath "${_pythonpath}:${_p}")
     endforeach()

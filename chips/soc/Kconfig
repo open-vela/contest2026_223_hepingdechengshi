@@ -53,5 +53,5 @@ menu "SOC_CONFIG"
 endmenu
 
 if SOC_BK7258
-source "../vendor/beken/chips/soc/bk7258_ap/Kconfig"
+source "../vendor/beken/chips/bk7258/soc/Kconfig"
 endif

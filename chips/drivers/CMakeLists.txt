@@ -1,3 +1,6 @@
+# The selected chip entry (chips/bk7258) adds this directory as a shared
+# driver collection.  Keep the BK7258 AP variant sources here; the chip
+# CMake file supplies the common include root from the parent chips tree.
 # armino_build_get_property(target ARMINO_SOC)
 
 # TODO
@@ -426,15 +429,15 @@ if (CONFIG_MAILBOX)
 	endif()
 endif()
 
-	list(APPEND incs
-		"${target}"
-	)
+if (target)
+	list(APPEND incs "${target}")
 
 	list(APPEND srcs
 		"${target}/gpio_driver.c"
 		"${target}/interrupt.c"
 		"${target}/interrupt_statis.c"
-		)
+	)
+endif()
 
 if (CONFIG_SDMADC)
 	list(APPEND srcs

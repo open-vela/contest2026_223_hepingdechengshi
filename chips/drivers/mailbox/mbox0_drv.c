@@ -2,7 +2,9 @@
 #include "cpu_id.h"
 #include "mbox0_drv.h"
 #include "sys_driver.h"
-
+#ifdef NUTTX_BUILD
+#include "syslog.h"
+#endif
 #if CONFIG_SOC_SMP
 // cpu0 + smp(cpu1,cpu2)
 #define MBOX0_CHN0_FIFO_LEN     2
@@ -51,11 +53,15 @@ static void mbox0_drv_isr_handler(void)
 	do
 	{
 		fifo_status = mbox0_dev.chn_drv[SELF_CHNL]->chn_get_rx_fifo_stat(&mbox0_dev.hal);
-		
+#ifdef NUTTX_BUILD
+	syslog(LOG_INFO, "mbox0_drv_isr_handler[%d] fifo=%" PRIu32, SELF_CHNL, fifo_status);
+#endif
 		if(fifo_status & RX_FIFO_STAT_NOT_EMPTY)
 		{
 			mbox0_drv_recieve_message(&message);
-
+#ifdef NUTTX_BUILD
+			syslog(LOG_INFO, "\t message[%d] data=%" PRIu32 " %" PRIu32, SELF_CHNL, message.data[0], message.data[1]);
+#endif
 			if(message.data[1] != 0)  /* message data len is not 0. */
 			{
 				if(mbox0_dev.rx_callback != NULL)
@@ -92,7 +98,13 @@ int mbox0_drv_get_send_stat(uint32_t dest_cpu, uint32_t *fifo_status)
 
 int mbox0_drv_send_message(mbox0_message_t* message)
 {
-	return mbox0_dev.chn_drv[SELF_CHNL]->chn_send(&mbox0_dev.hal, message);
+	int ret = mbox0_dev.chn_drv[SELF_CHNL]->chn_send(&mbox0_dev.hal, message);
+#ifdef NUTTX_BUILD
+	syslog(LOG_INFO, "mbox0_drv_send_message[%d][%d] data=%" PRIu32 " %" PRIu32, 
+		SELF_CHNL, ret, 
+		message->data[0], message->data[1]);
+#endif
+	return ret;
 }
 
 int mbox0_drv_callback_register(mbox0_rx_callback_t callback)

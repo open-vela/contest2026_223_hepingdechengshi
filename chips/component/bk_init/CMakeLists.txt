@@ -1,4 +1,4 @@
-set(verify_recode_file "${NUTTX_CHIP_ABS_DIR}/components/bk_libs/verify_info.cmake")
+set(verify_recode_file "${BEKEN_CHIPS_DIR}/component/bk_libs/verify_info.cmake")
 function(check_verify_env_varible)
 	message(STATUS "enter check_verify_env_varible")
 	set(bk_verify_id)

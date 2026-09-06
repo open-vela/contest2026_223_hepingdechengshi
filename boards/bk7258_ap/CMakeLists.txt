@@ -1,10 +1,15 @@
 # Contest 2026 team 000 board placeholder
 if(CONFIG_ARCH_BOARD_CONTEST2026_000_BOARD)
+  get_filename_component(BEKEN_CHIPS_DIR "${NUTTX_CHIP_ABS_DIR}/.." ABSOLUTE)
   add_subdirectory(src)
+  add_subdirectory(partitions)
 
-  
   # Expose the generated header to the board sources (and any target that
   # inherits board's interface include dirs).
+  target_include_directories(board PRIVATE
+    ${NUTTX_BOARD_ABS_DIR}/include
+    ${NUTTX_CHIP_ABS_DIR}/src
+  )
   target_include_directories(board PUBLIC ${CMAKE_BINARY_DIR}/include)
 
   # Firmware packaging is handled by scripts/post_build.cmake.
@@ -18,4 +23,3 @@ set(LD_SCRIPT_FILE bk7258_ap_bsp.ld)
 
 set_property(GLOBAL PROPERTY LD_SCRIPT
                               "${NUTTX_BOARD_ABS_DIR}/scripts/${LD_SCRIPT_FILE}")
-

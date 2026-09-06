@@ -28,25 +28,3 @@ else()
     COMMENT "bk7258_ap: packaging all-app.bin"
     VERBATIM)
 endif()
-
-# auto-partition
-
-set(parition_csv ${NUTTX_CHIP_ABS_DIR}/boards/partitions/$(ARMINO_SOC_NAME)/auto_partitions.csv)
-
-
-
-set(BK_PACKAGE_TOOL ${NUTTX_CHIP_ABS_DIR}/tools/build_tools/build_process/bk_build_package.py)
-set(BK_ALL_PACKAGE ${CMAKE_BINARY_DIR}/package/all-app.bin)
-set(package_json${NUTTX_CHIP_ABS_DIR}//bk_package.json)
-package_json := $(PARTITIONS_DIR)/bk_package.json
-build_summary := $(package_dir)/build_summary.txt
-
-
-bk_add_python_command(
-	OUTPUT  ${BK_ALL_PACKAGE}
-	SCRIPT  ${BK_PACKAGE_TOOL}
-	ARGS    bk7258_ap
-	DEPENDS ${CONFIG_FILE_LISTS}
-	COMMENT "Generating Post"
-)
-

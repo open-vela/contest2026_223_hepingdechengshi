@@ -62,7 +62,7 @@
 
 #define TAG "init"
 
-/* newlib-style global-seed PRNG (defined in chips/src/beken_port.c) */
+/* newlib-style global-seed PRNG (defined in chips/bk7258/src/beken_port.c) */
 extern void native_srand(unsigned int seed);
 
 
