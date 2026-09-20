@@ -12,13 +12,7 @@ comment "Beken Configuration Options"
 choice
     prompt "Beken Chip Selection"
     default ARCH_CHIP_BK7258
-menu "Modify System Config"
 
-	config DEBUG_AP_STARTUP
-		bool "Enable debug ap startup"
-		default n
-
-endmenu
 config ARCH_CHIP_BK7258
 	bool "bk7258"
  	select ARCH_ARMV8M
@@ -44,6 +38,14 @@ config ARCH_CHIP_BK7258
 	# select BF0_HCPU
 
 endchoice
+
+menu "Modify System Config"
+
+	config DEBUG_AP_STARTUP
+		bool "Enable debug ap startup"
+		default n
+
+endmenu
 
 config BK_CMSIS
 	bool "bk cmsis"

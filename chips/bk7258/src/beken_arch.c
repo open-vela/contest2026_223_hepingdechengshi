@@ -12,6 +12,7 @@
 #include "cmsis_gcc.h"
 #include "easy_log.h"
 #include "beken_arch.h"
+#include "beken_irq.h"
 /* nxsched_process_delivered is declared in the internal sched/sched.h;
  * forward-declare it here to avoid pulling in private kernel headers. */
 void nxsched_process_delivered(int cpu);
@@ -77,8 +78,9 @@ int up_cpu_index(void) { return nuttx_cpu_get_core_id(); }
  ****************************************************************************/
 static volatile bool g_trace_core2_debug = true;
 static void multicore_start_debug_func(void) {
+  common_irq_initialize_on_core();
   __enable_fault_irq();
-	__enable_irq();
+  __enable_irq();
   EA_LOG_D("multicore start function");
   
   nx_idle_trampoline();
@@ -201,12 +203,13 @@ int bk_cross_core_send(uint32_t cmd) {
   return OK;
 }
 uintptr_t up_get_intstackbase(int cpu) {
+  uintptr_t ret = 0;
   if (cpu == 0) {
-    return __StackLimitCpu0;
+    ret = (uintptr_t)&__StackLimitCpu0;
   } else if (cpu == 1) {
-    return __StackLimitCpu1;
+    ret = (uintptr_t)&__StackLimitCpu1;
   }
-  return 0;
+  return ret;
 }
 int up_cpu_idlestack(int cpu, struct tcb_s *tcb, size_t stack_size) {
   uintptr_t stack_alloc;

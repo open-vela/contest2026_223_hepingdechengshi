@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "team_id": "contest2026_223_hepingdechengshi",
+  "github_login": "lthxxn",
+  "generator": "claude-code-collector@1.3.0",
+  "updated_at": "2026-09-20T14:26:47.966441+00:00",
+  "sessions": [
+    {
+      "session_id": "42b9fb43-99d0-48a1-bb9b-f0ae0d506614",
+      "tool": "claude-code",
+      "started_at": "2026-09-19T15:16:45.713Z",
+      "last_event_at": "2026-09-19T17:15:37.251Z",
+      "event_count": 212,
+      "raw_event_count": 541,
+      "file_path": "logs/lthxxn/2026-09-20/claude-code__42b9fb43-99d0-48a1-bb9b-f0ae0d506614.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "claude-opus-4-8"
+    },
+    {
+      "session_id": "4c854403-d291-414b-8f5e-0bda4a8dbc15",
+      "tool": "claude-code",
+      "started_at": "2026-09-05T02:35:39.578Z",
+      "last_event_at": "2026-09-19T06:00:09.543Z",
+      "event_count": 16,
+      "raw_event_count": 34,
+      "file_path": "logs/lthxxn/2026-09-19/claude-code__4c854403-d291-414b-8f5e-0bda4a8dbc15.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "claude-opus-4-8"
+    }
+  ]
+}

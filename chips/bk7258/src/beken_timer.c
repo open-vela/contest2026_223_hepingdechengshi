@@ -17,6 +17,19 @@
  * under the License.
  *
  ****************************************************************************/
+#include "syslog.h"
+#include "systick.h"
 #include <nuttx/arch.h>
+#include <nuttx/timers/arch_timer.h>
 
-void up_timer_initialize(void) {}
+void up_timer_initialize(void) {
+  syslog(LOG_INFO, "up_timer_initialize\n");
+  FAR struct timer_lowerhalf_s *lower;
+  lower = systick_initialize(true, 120000000, -1);
+  if (lower == NULL) {
+    syslog(LOG_ERR, "ERROR: systick_initialize failed\n");
+    return;
+  }
+
+  up_timer_set_lowerhalf(lower);
+}

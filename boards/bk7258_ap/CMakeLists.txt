@@ -4,6 +4,13 @@ if(CONFIG_ARCH_BOARD_CONTEST2026_000_BOARD)
   add_subdirectory(src)
   add_subdirectory(partitions)
 
+  # Add ROMFS files
+  if(CONFIG_ETC_ROMFS)
+    add_board_rcsrcs(${CMAKE_CURRENT_SOURCE_DIR}/etc/init.d/rcS
+                     ${CMAKE_CURRENT_SOURCE_DIR}/etc/init.d/rc.sysinit)
+    add_board_rcraws(${CMAKE_CURRENT_SOURCE_DIR}/etc/sysconfig/network-scripts/ipcfg-eth0)
+  endif()
+
   # Expose the generated header to the board sources (and any target that
   # inherits board's interface include dirs).
   target_include_directories(board PRIVATE

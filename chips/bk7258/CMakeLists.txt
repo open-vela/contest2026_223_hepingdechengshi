@@ -38,6 +38,8 @@ set(SRCS
     ${BEKEN_CHIP_DIR}/src/beken_bringup.c
     ${BEKEN_CHIP_DIR}/src/beken_rtos.c
     ${BEKEN_CHIP_DIR}/src/beken_port.c
+    ${BEKEN_CHIP_DIR}/src/spinlock_debug.c
+    ${BEKEN_CHIP_DIR}/src/spinlock_wrapper.c
 )
 set(ENV{PYTHONPATH} $ENV{PYTHONPATH}:${BEKEN_CHIPS_DIR}/tools/env_tools/bk_py_libs)
 

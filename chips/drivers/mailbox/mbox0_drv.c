@@ -46,7 +46,9 @@ static void mbox0_drv_isr_handler(void)
 	mbox0_message_t message;
 
 	int_status = mbox0_dev.chn_drv[SELF_CHNL]->chn_get_int_status(&mbox0_dev.hal);
-
+#ifdef NUTTX_BUILD
+	syslog(LOG_INFO, "mbox0_drv_isr_handler[%d] int_status=%" PRIu32, SELF_CHNL, int_status);
+#endif
 	if(int_status == 0)
 		return;
 
@@ -54,7 +56,7 @@ static void mbox0_drv_isr_handler(void)
 	{
 		fifo_status = mbox0_dev.chn_drv[SELF_CHNL]->chn_get_rx_fifo_stat(&mbox0_dev.hal);
 #ifdef NUTTX_BUILD
-	syslog(LOG_INFO, "mbox0_drv_isr_handler[%d] fifo=%" PRIu32, SELF_CHNL, fifo_status);
+	// syslog(LOG_INFO, "mbox0_drv_isr_handler[%d] fifo=%" PRIu32, SELF_CHNL, fifo_status);
 #endif
 		if(fifo_status & RX_FIFO_STAT_NOT_EMPTY)
 		{
@@ -99,11 +101,6 @@ int mbox0_drv_get_send_stat(uint32_t dest_cpu, uint32_t *fifo_status)
 int mbox0_drv_send_message(mbox0_message_t* message)
 {
 	int ret = mbox0_dev.chn_drv[SELF_CHNL]->chn_send(&mbox0_dev.hal, message);
-#ifdef NUTTX_BUILD
-	syslog(LOG_INFO, "mbox0_drv_send_message[%d][%d] data=%" PRIu32 " %" PRIu32, 
-		SELF_CHNL, ret, 
-		message->data[0], message->data[1]);
-#endif
 	return ret;
 }
 

@@ -1,0 +1,19 @@
+--- a/nuttx/include/nuttx/spinlock.h
++++ b/nuttx/include/nuttx/spinlock.h
+@@ -1031,10 +1031,20 @@
+ #ifdef CONFIG_SPINLOCK
+ static inline_function
+ bool rspin_unlock(FAR rspinlock_t *lock)
+ {
+   bool ret = false;
+
++#ifdef CONFIG_ARCH_CHIP_BK7258
++  /* BK7258 SMP debugging: record state before asserting */
++  extern void spinlock_debug_check_before_unlock(FAR rspinlock_t *lock);
++  spinlock_debug_check_before_unlock(lock);
++#endif
++
+   DEBUGASSERT(lock->owner == this_cpu() + 1);
+   DEBUGASSERT(lock->count >= 1);
+
+   if (--lock->count == 0)

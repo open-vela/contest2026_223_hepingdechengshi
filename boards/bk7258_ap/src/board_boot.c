@@ -63,25 +63,29 @@ int board_app_initialize(uintptr_t arg) {
 /****************************************************************************
  * SMP Test Tasks
  ****************************************************************************/
-
+#define SMP_TEST_TASK_PRIORITY 99
 static int test_task_entry(int argc, char *argv[]) {
+  int run_count = 0;
   int task_id = atoi(argv[1]);
-  bk_cross_core_send(BK_NUTTX_SMP_CMD_TEST);
   while (1) {
     int cpu_id = up_cpu_index();
-    printf("Task %d Run on CPU %d\n", task_id, cpu_id);
-    usleep(1000000); /* 1 second */
+    syslog(LOG_INFO, "Task %d  Run on CPU %d %d\n", task_id, cpu_id, run_count++);
+    if (run_count > 5) {
+      for (int j = 0; j < 6000000; j++);
+    } else {
+      usleep(1000000); /* 1 second */
+    }
   }
 
   return 0;
 }
-
+char* smp_test_task_argv1[] = {"1", NULL};
+char* smp_test_task_argv2[] = {"2", NULL};
 static void create_smp_test_tasks(void) {
-  char *argv1[] = {"test_task", "1", NULL};
-  char *argv2[] = {"test_task", "2", NULL};
+
 
   /* Create task 1 */
-  int pid1 = task_create("test_task1", 100, 2048, test_task_entry, argv1);
+  int pid1 = task_create("test_task1", SMP_TEST_TASK_PRIORITY, 2048, test_task_entry, smp_test_task_argv1);
   if (pid1 < 0) {
     syslog(LOG_ERR, "Failed to create test_task1\n");
   } else {
@@ -89,7 +93,7 @@ static void create_smp_test_tasks(void) {
   }
 
   /* Create task 2 */
-  int pid2 = task_create("test_task2", 100, 2048, test_task_entry, argv2);
+  int pid2 = task_create("test_task2", SMP_TEST_TASK_PRIORITY, 2048, test_task_entry, smp_test_task_argv2);
   if (pid2 < 0) {
     syslog(LOG_ERR, "Failed to create test_task2\n");
   } else {
@@ -118,6 +122,7 @@ void board_late_initialize(void) {
   components_early_init_stage2();
   bk_module_init();
   beken_late_bringup();
+  nx_mount(NULL, "/proc", "procfs", 0, NULL);
 
   /* Initialize LCD ST7701SN RGB888 */
 }
